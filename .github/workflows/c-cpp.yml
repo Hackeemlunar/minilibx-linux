@@ -1,0 +1,35 @@
+name: C/C++ CI
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Install Linux dependencies (X11, zlib, bsd)
+      run: sudo apt-get update && sudo apt-get install -y xorg libxext-dev zlib1g-dev libbsd-dev
+
+    - name: Unzip MLX for Linux
+      run: unzip mlx_linux.zip -d mlx_linux
+      # Make sure you commit mlx_linux.zip or download it dynamically
+
+    - name: Configure MLX
+      run: ./configure
+
+    - name: Build project
+      run: make
+
+    - name: Run checks
+      run: make check
+
+    - name: Run distcheck
+      run: make distcheck
